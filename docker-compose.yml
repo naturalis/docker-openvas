@@ -1,0 +1,37 @@
+version: '3'
+services:
+  openvas:
+    image: "mikesplain/openvas"
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+     - "8443:443"
+    volumes:
+     - "/data:/var/lib/openvas/mgr"
+    networks:
+      - default
+    labels:
+      - "traefik.backend=naturalis.nl"
+      - "traefik.docker.network=web"
+      - "traefik.enable=true"
+      - "traefik.port=8443"
+      - ${OPENVAS_URL_CONFIG:-traefik.frontend.rule=Host:openvas.naturalis.nl}
+  traefik:
+    image: traefik:1.5.3
+    restart: always
+    ports:
+      - 443:443
+    networks:
+      - default
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${TRAEFIK_TOML_FILE:-./traefik.dev.toml}:/traefik.toml
+      - ${ACME_JSON:-./acme.json}:/acme.json
+
+# run docker network create web before
+networks:
+  web:
+    external: true
+
