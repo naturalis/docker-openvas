@@ -35,8 +35,8 @@ services:
       links:
         - nginx
       environment:
-        DOMAINS: {$siteUrl:-example.com}
-        EMAIL: {$lets_encrypt_mail:-webmaster@example.com}
+        DOMAINS: ${siteUrl:-example.com}
+        EMAIL: ${lets_encrypt_mail:-webmaster@example.com}
         WEBROOT_PATH: /tmp/letsencrypt
         EXP_LIMIT: 30
         CHECK_FREQ: 30
