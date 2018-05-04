@@ -11,6 +11,7 @@ services:
      - "/data:/var/lib/openvas/mgr"
     networks:
       - default
+      - web
     labels:
       - "traefik.backend=naturalis.nl"
       - "traefik.docker.network=web"
