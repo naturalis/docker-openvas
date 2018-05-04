@@ -18,8 +18,8 @@ services:
       - "traefik.port=8443"
       - ${OPENVAS_URL_CONFIG:-traefik.frontend.rule=Host:openvas.naturalis.nl}
   traefik:
-    image: traefik:1.5.3
-    restart: always
+    image: traefik:1.6.0
+    restart: unless-stopped
     ports:
       - 443:443
     networks:
