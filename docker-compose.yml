@@ -41,7 +41,7 @@ services:
         EXP_LIMIT: 30
         CHECK_FREQ: 30
   openvas:
-    image: "mikesplain/openvas"
+    image: "mikesplain/openvas:9"
     restart: unless-stopped
     env_file:
       - .env
