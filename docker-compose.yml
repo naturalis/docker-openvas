@@ -13,6 +13,8 @@ services:
       - default
       - web
     labels:
+      - "deck-chores.dump.command=sh -c \"greenbone-nvt-sync; openvasmd --rebuild --progress\""
+      - "deck-chores.dump.interval=daily"
       - "traefik.backend=naturalis.nl"
       - "traefik.docker.network=web"
       - "traefik.enable=true"
@@ -31,6 +33,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${TRAEFIK_TOML_FILE:-./traefik.dev.toml}:/traefik.toml
       - ${ACME_JSON:-./acme.json}:/acme.json
+ # Daily updates to openvas
+  cron:
+    restart: always
+    image: funkyfuture/deck-chores
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
 # run docker network create web before
 networks:
