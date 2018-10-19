@@ -33,7 +33,7 @@ services:
         - ./data/letsencrypt:/etc/letsencrypt
         - ./data/letsencrypt-www:/tmp/letsencrypt
       links:
-        - nginx
+        - nginx_ssl
       environment:
         DOMAINS: ${siteUrl:-example.com}
         EMAIL: ${lets_encrypt_mail:-webmaster@example.com}
