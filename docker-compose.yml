@@ -8,6 +8,11 @@ services:
         - "80:80"
       links:
         - openvas
+      logging:
+        driver: "json-file"
+        options:
+          max-size: '10m'
+          max-file: '5'
       volumes:
         - ./nginx.conf:/etc/nginx/nginx.conf:ro
         - ./data/letsencrypt:/etc/letsencrypt
@@ -21,47 +26,47 @@ services:
         - "443:443"
       links:
         - openvas
-        - letsencrypt
+      logging:
+        driver: "json-file"
+        options:
+          max-size: '10m'
+          max-file: '5'
       volumes:
         - ./nginx_ssl.conf:/etc/nginx/nginx.conf:ro
         - ./data/letsencrypt:/etc/letsencrypt
         - ./data/letsencrypt-www:/tmp/letsencrypt
-  letsencrypt:
-      restart: always
-      image: kvaps/letsencrypt-webroot
-      volumes:
-        - ./data/letsencrypt:/etc/letsencrypt
-        - ./data/letsencrypt-www:/tmp/letsencrypt
-      links:
-        - nginx_ssl
-      environment:
-        DOMAINS: ${siteUrl:-example.com}
-        EMAIL: ${lets_encrypt_mail:-webmaster@example.com}
-        WEBROOT_PATH: /tmp/letsencrypt
-        EXP_LIMIT: 30
-        CHECK_FREQ: 30
   openvas:
-    image: "mikesplain/openvas:9"
-    restart: unless-stopped
-    env_file:
-      - .env
-    ports:
-     - "8443:443"
-    volumes:
-     - "/data:/var/lib/openvas/mgr"
-    networks:
-      - default
-      - web
-    labels:
-      - "deck-chores.dump.command=sh -c \"greenbone-nvt-sync; openvasmd --rebuild --progress\""
-      - "deck-chores.dump.interval=daily"
+      image: "mikesplain/openvas:9"
+      restart: unless-stopped
+      env_file:
+        - .env
+      ports:
+        - "8443:443"
+      logging:
+        driver: "json-file"
+        options:
+          max-size: '10m'
+          max-file: '5'
+      volumes:
+       - "/data:/var/lib/openvas/mgr"
+      networks:
+        - default
+        - web
+      labels:
+        - "deck-chores.dump.command=sh -c \"greenbone-nvt-sync; openvasmd --rebuild --progress\""
+        - "deck-chores.dump.interval=daily"
 
  # Daily updates to openvas
   cron:
-    restart: unless-stopped
-    image: funkyfuture/deck-chores
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      restart: unless-stopped
+      image: funkyfuture/deck-chores
+      logging:
+        driver: "json-file"
+        options:
+          max-size: '10m'
+          max-file: '5'
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
 
 # run docker network create web before
 networks:
