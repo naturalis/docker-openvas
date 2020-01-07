@@ -9,7 +9,7 @@ x-logging:
 
 services:
   openvas:
-      image: "naturalis/openvas:9"
+      image: "naturalis/openvas:7.0.3"
       restart: unless-stopped
       env_file:
         - .env
